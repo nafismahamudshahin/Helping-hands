@@ -35,8 +35,6 @@ import { signOut, useSession } from "@/lib/auth-client"
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/upcoming-events", label: "Upcoming Events" },
-  { href: "/manage-events", label: "Manage Events" },
-  { href: "/joined-events", label: "Joined Events" },
 ]
 
 const logoClassName =
@@ -120,7 +118,7 @@ export function Navbar() {
                 className={cn(
                   "text-[0.95rem] font-medium text-gray-600 transition-colors hover:text-green-600 dark:text-gray-300 dark:hover:text-green-400",
                   active &&
-                    "text-green-700 dark:text-green-400"
+                  "text-green-700 dark:text-green-400"
                 )}
               >
                 {link.label}
@@ -159,14 +157,14 @@ export function Navbar() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuLinkItem
-                  render={<Link href="/manage-events" />}
+                  render={<Link href="/create-event" />}
                   className="px-3 py-2 font-medium text-green-600 focus:bg-green-50 focus:text-green-700 dark:text-green-400 dark:focus:bg-green-950 dark:focus:text-green-300"
                 >
                   <CirclePlus className="size-4 text-green-600 dark:text-green-400" />
                   Create Event
                 </DropdownMenuLinkItem>
                 <DropdownMenuLinkItem
-                  render={<Link href="/manage-events" />}
+                  render={<Link href="/manage-event" />}
                   className="px-3 py-2"
                 >
                   <CalendarCog className="size-4 text-muted-foreground" />
@@ -236,7 +234,7 @@ export function Navbar() {
                       className={cn(
                         "rounded-lg px-3 py-2.5 text-base font-medium text-foreground/80 transition-colors hover:bg-muted hover:text-green-600",
                         active &&
-                          "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400"
+                        "bg-green-50 text-green-700 dark:bg-green-500/10 dark:text-green-400"
                       )}
                     >
                       {link.label}
