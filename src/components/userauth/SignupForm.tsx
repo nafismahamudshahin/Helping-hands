@@ -14,6 +14,8 @@ import {
   UserRound,
 } from "lucide-react"
 import { ContinueWithGoogle } from "./ContinueWithGoogle"
+import { signUp } from "@/lib/auth-client"
+import { toast } from "sonner"
 
 
 type FieldProps = InputHTMLAttributes<HTMLInputElement> & {
@@ -40,14 +42,12 @@ export function TextField({ label, icon: Icon, ...props }: FieldProps) {
 
 export function PasswordField({
   label,
-  name,
   value,
   onChange,
   autoComplete,
-  minLength = 8,
+  minLength = 6,
 }: {
   label: string
-  name: string
   value: string
   onChange: (value: string) => void
   autoComplete: string
@@ -63,7 +63,6 @@ export function PasswordField({
       <span className="flex h-[50px] items-center gap-3 rounded-xl border border-[#dbe8df] bg-white px-3.5 transition focus-within:border-[#20a45a] focus-within:ring-4 focus-within:ring-[#20a45a]/10 dark:border-white/10 dark:bg-white/[0.04] dark:focus-within:border-[#51d480] dark:focus-within:ring-[#51d480]/10">
         <LockKeyhole className="size-[17px] shrink-0 text-[#789087] dark:text-[#91a99d]" aria-hidden="true" />
         <input
-          name={name}
           type={visible ? "text" : "password"}
           value={value}
           onChange={(event) => onChange(event.target.value)}
@@ -93,13 +92,41 @@ export function SignupForm() {
   const passwordsMismatch =
     confirmPassword.length > 0 && password !== confirmPassword
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (password !== confirmPassword) {
       setMessage("Your passwords don’t match. Please check and try again.")
       return
     }
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const formUser = Object.fromEntries(formData.entries()) as { name: string, email: string, photoUrl: string }
+    try {
+      const { data, error } = await signUp.email({
+        name: formUser.name,
+        email: formUser.email,
+        image: formUser.photoUrl,
+        password: password as string,
+      });
 
+      if (error) {
+        console.error("Signup failed:", error.message);
+        toast.error(error.message);
+        return;
+      }
+
+      toast.success("Account created successfully!");
+
+      console.log(data);
+    } catch (error) {
+      console.error("Unexpected error:", error);
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again."
+      );
+    }
     setMessage("Your details look good. Account creation will be available soon.")
   }
 
@@ -172,7 +199,7 @@ export function SignupForm() {
               <TextField
                 label="Full name"
                 icon={UserRound}
-                name="fullName"
+                name="name"
                 type="text"
                 autoComplete="name"
                 placeholder="Your full name"
@@ -198,14 +225,12 @@ export function SignupForm() {
               />
               <PasswordField
                 label="Password"
-                name="password"
                 value={password}
                 onChange={setPassword}
                 autoComplete="new-password"
               />
               <PasswordField
                 label="Confirm password"
-                name="confirmPassword"
                 value={confirmPassword}
                 onChange={setConfirmPassword}
                 autoComplete="new-password"

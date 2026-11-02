@@ -3,19 +3,54 @@
 import { useState, type FormEvent } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { ArrowRight, Leaf } from "lucide-react"
 
 import { Mail } from "lucide-react"
 import { PasswordField, TextField } from "./SignupForm"
 import { ContinueWithGoogle } from "./ContinueWithGoogle"
+import { toast } from "sonner"
+import { signIn } from "@/lib/auth-client"
 
 export function LoginForm() {
+  const router = useRouter()
   const [password, setPassword] = useState("")
-  const [message, setMessage] = useState("")
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setMessage("Sign in will be available once authentication is connected.")
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const email = formData.get("email") as string;
+    const remember = formData.get("remember") === "true";
+
+    console.log("data here: ", email, remember)
+    try {
+      const { error } = await signIn.email({
+        email: email,
+        password: password as string,
+        rememberMe: remember,
+        callbackURL: "/"
+      });
+
+      if (error) {
+        console.error("login failed:", error.message);
+        toast.error(error.message);
+        return;
+      }
+
+      toast.success("you are login successfully!");
+
+      router.replace("/")
+      router.refresh()
+    } catch (error) {
+      console.error("Unexpected error:", error);
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again."
+      );
+    }
   }
 
   return (
@@ -95,7 +130,6 @@ export function LoginForm() {
               />
               <PasswordField
                 label="Password"
-                name="password"
                 value={password}
                 onChange={setPassword}
                 autoComplete="current-password"
@@ -107,23 +141,18 @@ export function LoginForm() {
                   <input
                     type="checkbox"
                     name="remember"
-                    className="size-4 rounded border-[#c9d9ce] accent-[#168a4d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#168a4d]"
+                    value="true"
+                    className="size-4 rounded border-[#c9d9ce] accent-[#168a4d]"
                   />
                   Remember me
                 </label>
                 <Link
-                  href="/forgot-password"
+                  href=""
                   className="font-semibold text-[#147b46] hover:underline dark:text-[#6bdd92]"
                 >
                   Forgot password?
                 </Link>
               </div>
-
-              {message && (
-                <p className="text-sm text-[#147b46] dark:text-[#6bdd92]" role="status">
-                  {message}
-                </p>
-              )}
 
               <button
                 type="submit"
