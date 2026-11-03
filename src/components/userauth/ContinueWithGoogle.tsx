@@ -14,7 +14,7 @@ export function ContinueWithGoogle() {
       <Button
         type="button"
         variant="outline"
-        className="flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-[#dbe6df] bg-white text-sm font-semibold text-[#253a30] transition-colors hover:bg-[#f7faf8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#168a4d] dark:border-white/15 dark:bg-white/[0.04] dark:text-[#edf5ef] dark:hover:bg-white/[0.08]"
+        className="flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-[#dbe6df] bg-white text-sm font-semibold text-[#253a30] transition-colors hover:bg-[#f7faf8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#168a4d] dark:border-white/15 dark:bg-white/4 dark:text-[#edf5ef] dark:hover:bg-white/8"
       >
         <GoogleMark />
         Continue with Google
@@ -28,7 +28,7 @@ function GoogleMark() {
     <svg
       aria-hidden="true"
       viewBox="0 0 48 48"
-      className="size-[18px]"
+      className="size-4.5"
     >
       <path
         fill="#EA4335"

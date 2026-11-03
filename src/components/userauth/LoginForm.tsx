@@ -4,121 +4,139 @@ import { useState, type FormEvent } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowRight, Leaf } from "lucide-react"
+import { ArrowRight, CalendarCheck2, HeartHandshake, Leaf, Loader2, Mail, ShieldCheck, Users } from "lucide-react"
+import { toast } from "sonner"
 
-import { Mail } from "lucide-react"
 import { PasswordField, TextField } from "./SignupForm"
 import { ContinueWithGoogle } from "./ContinueWithGoogle"
-import { toast } from "sonner"
 import { signIn } from "@/lib/auth-client"
+
+/* STATIC DEMO CONTENT – replace with real numbers whenever you like */
+const STATS = [
+  { Icon: Users, value: "2.4k+", label: "Volunteers" },
+  { Icon: CalendarCheck2, value: "180+", label: "Events" },
+  { Icon: HeartHandshake, value: "35", label: "Communities" },
+]
 
 export function LoginForm() {
   const router = useRouter()
   const [password, setPassword] = useState("")
+  const [submitting, setSubmitting] = useState(false)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    const email = formData.get("email") as string;
-    const remember = formData.get("remember") === "true";
+    if (submitting) return
 
-    console.log("data here: ", email, remember)
+    const formData = new FormData(event.currentTarget)
+    const email = formData.get("email") as string
+    const remember = formData.get("remember") === "true"
+
+    setSubmitting(true)
     try {
       const { error } = await signIn.email({
-        email: email,
-        password: password as string,
+        email,
+        password,
         rememberMe: remember,
-        callbackURL: "/"
-      });
+        callbackURL: "/",
+      })
 
       if (error) {
-        console.error("login failed:", error.message);
-        toast.error(error.message);
-        return;
+        console.error("Login failed:", error.message)
+        toast.error(error.message || "Invalid email or password.")
+        return
       }
 
-      toast.success("you are login successfully!");
-
+      toast.success("Welcome back! You’re logged in.")
       router.replace("/")
       router.refresh()
     } catch (error) {
-      console.error("Unexpected error:", error);
-
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong. Please try again."
-      );
+      console.error("Unexpected error:", error)
+      toast.error(error instanceof Error ? error.message : "Something went wrong. Please try again.")
+    } finally {
+      setSubmitting(false)
     }
   }
 
   return (
-    <section className="relative isolate overflow-hidden bg-[#f5faf6] px-4 py-10 text-[#13382b] dark:bg-[#071a13] dark:text-[#eff7f1] sm:px-6 sm:py-14">
-      <div className="pointer-events-none absolute -top-32 left-1/2 -z-10 size-[440px] -translate-x-1/2 rounded-full bg-[#dff4e5] blur-3xl dark:bg-[#0e452c]/40" />
+    <section className="relative isolate flex min-h-[calc(100vh-5rem)] items-center overflow-hidden bg-linear-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-4 py-10 text-[#13382b] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff7f1] sm:px-6 sm:py-14">
+      {/* Background glows */}
+      <div aria-hidden="true" className="pointer-events-none absolute -top-32 left-1/2 -z-10 size-140 -translate-x-1/2 rounded-full bg-emerald-400/25 blur-[120px] dark:bg-emerald-500/15" />
+      <div aria-hidden="true" className="pointer-events-none absolute -bottom-40 -right-24 -z-10 size-105 rounded-full bg-green-300/25 blur-[110px] dark:bg-green-600/10" />
 
-      <div className="mx-auto grid w-full max-w-[1000px] overflow-hidden rounded-[28px] border border-[#e1ebe4] bg-white shadow-[0_28px_80px_-40px_rgba(14,65,39,0.24)] dark:border-white/10 dark:bg-[#0d2119] dark:shadow-black/30 md:min-h-[590px] md:grid-cols-[0.88fr_1.12fr]">
-        <aside className="relative hidden min-h-full overflow-hidden bg-[#0a3626] md:block">
+      <div className="mx-auto grid w-full max-w-260 overflow-hidden rounded-[2rem] border border-white/80 bg-white shadow-[0_40px_90px_-40px_rgba(14,65,39,0.35)] dark:border-white/10 dark:bg-[#0d2119] dark:shadow-black/40 md:min-h-155 md:grid-cols-[0.9fr_1.1fr]">
+        {/* ------------------------------ Brand panel ------------------------------ */}
+        <aside className="relative hidden overflow-hidden bg-[#0a3626] md:block">
           <Image
             src="/images/hero-volunteers-tree-plantation.jpg"
             alt="Volunteers working together in their community"
             fill
-            sizes="(max-width: 1000px) 40vw, 420px"
-            className="object-cover opacity-45"
+            priority
+            sizes="(max-width: 1040px) 45vw, 470px"
+            className="object-cover opacity-50"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#062519] via-[#073221]/55 to-[#073221]/10" />
+          <div aria-hidden="true" className="absolute inset-0 bg-linear-to-t from-[#04150d] via-[#073221]/60 to-[#073221]/10" />
+          <div aria-hidden="true" className="absolute -right-20 -top-20 size-64 rounded-full bg-emerald-300/20 blur-3xl" />
+
           <div className="absolute inset-x-0 top-0 flex items-center gap-2.5 p-8">
-            <span className="flex size-10 items-center justify-center rounded-xl bg-white/15 text-[#a7edbc] ring-1 ring-white/20 backdrop-blur-sm">
+            <span className="flex size-10 items-center justify-center rounded-xl bg-white/15 text-[#a7edbc] ring-1 ring-white/25 backdrop-blur">
               <Leaf className="size-5" />
             </span>
             <span className="text-sm font-semibold tracking-wide text-white">
               Helping<span className="text-[#79db98]">Hands</span>
             </span>
           </div>
-          <div className="absolute inset-x-0 bottom-0 p-8 pb-10 text-white lg:p-10 lg:pb-12">
-            <p className="mb-4 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-[#c5f0d1] backdrop-blur-sm">
-              Welcome back
-            </p>
-            <h2 className="max-w-sm text-3xl font-bold leading-tight tracking-tight lg:text-[2.5rem]">
-              Good to see you again.
-            </h2>
-            <p className="mt-4 max-w-sm text-sm leading-6 text-white/75">
-              Pick up where you left off and keep making a difference in your
-              community.
-            </p>
-            <div className="mt-8 flex items-center gap-3 text-xs text-white/70">
-              <span className="flex -space-x-2" aria-hidden="true">
-                <span className="size-7 rounded-full border-2 border-[#17422f] bg-[#e8c4a1]" />
-                <span className="size-7 rounded-full border-2 border-[#17422f] bg-[#b8d4a2]" />
-                <span className="size-7 rounded-full border-2 border-[#17422f] bg-[#d49f83]" />
-              </span>
-              Your next good deed is waiting
+
+          <div className="absolute inset-x-0 bottom-0 space-y-6 p-8 pb-10 text-white lg:p-10 lg:pb-12">
+            <div>
+              <p className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium text-[#c5f0d1] backdrop-blur">
+                <HeartHandshake className="size-3.5" aria-hidden="true" />
+                Welcome back
+              </p>
+              <h2 className="max-w-sm text-3xl font-extrabold leading-tight tracking-tight lg:text-[2.5rem]">
+                Good to see you again.
+              </h2>
+              <p className="mt-4 max-w-sm text-sm leading-6 text-white/75">
+                Pick up where you left off and keep making a difference in your community.
+              </p>
             </div>
+
+            {/* Stats */}
+            <dl className="grid grid-cols-3 gap-2.5">
+              {STATS.map(({ Icon, value, label }) => (
+                <div key={label} className="rounded-2xl border border-white/15 bg-white/10 px-3 py-3 text-center backdrop-blur">
+                  <Icon className="mx-auto size-4 text-[#a7edbc]" aria-hidden="true" />
+                  <dd className="mt-1.5 text-lg font-extrabold leading-none">{value}</dd>
+                  <dt className="mt-1 text-[11px] text-white/70">{label}</dt>
+                </div>
+              ))}
+            </dl>
           </div>
         </aside>
 
-        <div className="flex items-center px-5 py-8 sm:px-10 sm:py-10 lg:px-12 lg:py-12">
-          <div className="mx-auto w-full max-w-[420px]">
+        {/* ------------------------------ Form panel ------------------------------ */}
+        <div className="flex items-center px-5 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-12">
+          <div className="mx-auto w-full max-w-105">
+            {/* Mobile logo */}
             <div className="mb-8 md:hidden">
               <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold">
                 <span className="flex size-9 items-center justify-center rounded-xl bg-[#e7f5eb] text-[#16814b] dark:bg-[#153d2a] dark:text-[#7ae39a]">
-                  <Leaf className="size-[18px]" />
+                  <Leaf className="size-4.5" />
                 </span>
                 Helping<span className="-ml-2 text-[#19a454]">Hands</span>
               </Link>
             </div>
 
-            <p className="text-sm font-semibold text-[#15834a] dark:text-[#6bdd92]">
-              WELCOME BACK
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#15834a] dark:text-[#6bdd92]">
+              Welcome back
             </p>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight text-[#123629] dark:text-[#f0f7f2] sm:text-[2.1rem]">
+            <h1 className="mt-2 bg-linear-to-r from-[#0f3325] via-emerald-700 to-emerald-500 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent dark:from-white dark:via-emerald-200 dark:to-emerald-400 sm:text-[2.2rem]">
               Log in to HelpingHands
             </h1>
             <p className="mt-2 text-sm leading-6 text-[#71857b] dark:text-[#a8bdb1]">
               Continue making a positive impact in your community.
             </p>
 
-            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            <form onSubmit={handleSubmit} className="mt-8 space-y-5" aria-busy={submitting}>
               <TextField
                 label="Email address"
                 icon={Mail}
@@ -137,7 +155,7 @@ export function LoginForm() {
               />
 
               <div className="flex items-center justify-between gap-3 text-sm">
-                <label className="inline-flex items-center gap-2 text-[#60776c] dark:text-[#b0c3b8]">
+                <label className="inline-flex cursor-pointer items-center gap-2 text-[#60776c] dark:text-[#b0c3b8]">
                   <input
                     type="checkbox"
                     name="remember"
@@ -146,8 +164,9 @@ export function LoginForm() {
                   />
                   Remember me
                 </label>
+                {/* ⚠️ Point this to your real reset-password route */}
                 <Link
-                  href=""
+                  href="/forgot-password"
                   className="font-semibold text-[#147b46] hover:underline dark:text-[#6bdd92]"
                 >
                   Forgot password?
@@ -156,10 +175,20 @@ export function LoginForm() {
 
               <button
                 type="submit"
-                className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#075237] to-[#14964c] px-5 text-sm font-semibold text-white shadow-[0_10px_22px_-12px_rgba(12,130,67,0.8)] transition hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#14964c] dark:from-[#147a45] dark:to-[#23ad5b]"
+                disabled={submitting}
+                className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-[#075237] via-[#0c7a46] to-[#14964c] px-5 text-sm font-semibold text-white shadow-[0_14px_28px_-12px_rgba(12,130,67,0.85)] transition hover:-translate-y-0.5 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#14964c] disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70 dark:from-[#147a45] dark:to-[#23ad5b]"
               >
-                Log in
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                {submitting ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                    Logging in…
+                  </>
+                ) : (
+                  <>
+                    Log in
+                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                  </>
+                )}
               </button>
             </form>
 
@@ -167,12 +196,14 @@ export function LoginForm() {
 
             <p className="mt-7 text-center text-sm text-[#71857b] dark:text-[#a8bdb1]">
               New to HelpingHands?{" "}
-              <Link
-                href="/signup"
-                className="font-semibold text-[#117b44] hover:underline dark:text-[#6bdd92]"
-              >
+              <Link href="/signup" className="font-semibold text-[#117b44] hover:underline dark:text-[#6bdd92]">
                 Create an account
               </Link>
+            </p>
+
+            <p className="mt-6 flex items-center justify-center gap-1.5 text-xs text-[#8aa096] dark:text-[#7f9588]">
+              <ShieldCheck className="size-3.5" aria-hidden="true" />
+              Your data is encrypted and never shared
             </p>
           </div>
         </div>
