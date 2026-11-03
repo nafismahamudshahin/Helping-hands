@@ -29,7 +29,7 @@ const EventCard = ({ event }: { event: EventType }) => {
     return (
         <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-white/80 bg-white shadow-[0_10px_40px_-24px_rgba(15,65,42,0.45)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_28px_60px_-28px_rgba(15,65,42,0.55)] dark:border-white/10 dark:bg-[#10251b]">
             {/* Cover */}
-            <div className="relative aspect-[16/10] overflow-hidden bg-emerald-100 dark:bg-[#183629]">
+            <div className="relative aspect-16/10 overflow-hidden bg-emerald-100 dark:bg-[#183629]">
                 <Image
                     src={event.thumbnailUrl}
                     alt={event.title}
@@ -38,7 +38,7 @@ const EventCard = ({ event }: { event: EventType }) => {
                     unoptimized
                     className="object-cover transition duration-500 group-hover:scale-105"
                 />
-                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                <div aria-hidden="true" className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
 
                 <span className={`absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold shadow-sm backdrop-blur dark:bg-black/50 ${style.pill}`}>
                     <span className={`size-1.5 rounded-full ${style.dot}`} />
