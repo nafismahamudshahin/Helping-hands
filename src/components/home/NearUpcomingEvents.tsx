@@ -31,7 +31,7 @@ async function UpcomingEventsGrid() {
 
     if (events.length === 0) {
         return (
-            <div className="col-span-full flex flex-col items-center rounded-3xl border border-dashed border-emerald-900/15 bg-white/60 px-6 py-14 text-center backdrop-blur dark:border-white/15 dark:bg-white/[0.03]">
+            <div className="col-span-full flex flex-col items-center rounded-3xl border border-dashed border-emerald-900/15 bg-white/60 px-6 py-14 text-center backdrop-blur dark:border-white/15 dark:bg-white/3">
                 <span className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-300">
                     <CalendarOff className="size-7" aria-hidden="true" />
                 </span>
@@ -51,7 +51,7 @@ function EventsGridSkeleton() {
             aria-hidden="true"
             className="overflow-hidden rounded-3xl border border-white/80 bg-white shadow-sm dark:border-white/10 dark:bg-[#10251b]"
         >
-            <Skeleton className="aspect-[16/10] w-full rounded-none" />
+            <Skeleton className="aspect-16/10 w-full rounded-none" />
             <div className="space-y-3 p-5">
                 <Skeleton className="h-5 w-3/4" />
                 <Skeleton className="h-4 w-1/2" />
@@ -68,7 +68,7 @@ function EventsGridSkeleton() {
 export default function NearUpcomingEvents() {
     return (
         <section className="bg-[#f4fbf6] px-5 pb-14 pt-4 text-[#092d23] transition-colors dark:bg-[#081b16] dark:text-[#f1f8f3] sm:px-8 sm:pb-20 lg:px-[6.65%]">
-            <div className="mx-auto max-w-[1400px]">
+            <div className="mx-auto max-w-7xl">
                 <div className="mb-8 flex items-end justify-between gap-4">
                     <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#159b50] dark:text-[#55d788]">

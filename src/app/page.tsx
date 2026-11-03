@@ -5,7 +5,8 @@ import EventGallery from "@/components/home/EventGallery"
 import NewsletterSection from "@/components/home/NewsletterSection"
 
 
-export default function HomePage() {
+export default async function HomePage() {
+
   return (
     <>
       <HeroBanner></HeroBanner>

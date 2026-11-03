@@ -10,13 +10,13 @@ const stats = [
 export default function StatusSection() {
     return (
         <section className="bg-[#f4fbf6] px-5 pb-12 pt-2 transition-colors dark:bg-[#081b16] sm:px-8 sm:pb-16 lg:px-[6.65%]">
-            <dl className="mx-auto grid max-w-[1400px] grid-cols-2 gap-4 lg:grid-cols-4">
+            <dl className="mx-auto grid max-w-7xl grid-cols-2 gap-4 lg:grid-cols-4">
                 {stats.map(({ value, label, Icon, tone }) => (
                     <div
                         key={label}
-                        className="group flex flex-col items-center gap-3 rounded-3xl border border-white/80 bg-white/70 p-5 text-center shadow-[0_10px_40px_-24px_rgba(15,65,42,0.4)] backdrop-blur transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_-24px_rgba(15,65,42,0.5)] dark:border-white/10 dark:bg-white/[0.04] sm:flex-row sm:gap-4 sm:p-6 sm:text-left"
+                        className="group flex flex-col items-center gap-3 rounded-3xl border border-white/80 bg-white/70 p-5 text-center shadow-[0_10px_40px_-24px_rgba(15,65,42,0.4)] backdrop-blur transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_50px_-24px_rgba(15,65,42,0.5)] dark:border-white/10 dark:bg-white/4 sm:flex-row sm:gap-4 sm:p-6 sm:text-left"
                     >
-                        <span className={`flex size-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br text-white shadow-lg transition group-hover:scale-110 ${tone}`}>
+                        <span className={`flex size-12 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br text-white shadow-lg transition group-hover:scale-110 ${tone}`}>
                             <Icon className="size-6" aria-hidden="true" />
                         </span>
                         <div className="flex flex-col-reverse">
