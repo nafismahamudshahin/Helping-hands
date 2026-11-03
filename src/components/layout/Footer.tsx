@@ -33,12 +33,12 @@ const linkClass =
 
 export function Footer() {
   return (
-    <footer className="relative isolate overflow-hidden border-t border-[#dcebe1] bg-gradient-to-b from-[#f3faf5] to-[#e6f5ec] text-[#15382d] dark:border-white/10 dark:from-[#06271d] dark:to-[#041a13] dark:text-[#eef7f1]">
-      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/60 to-transparent" />
+    <footer className="relative isolate overflow-hidden border-t border-[#dcebe1] bg-linear-to-b from-[#f3faf5] to-[#e6f5ec] text-[#15382d] dark:border-white/10 dark:from-[#06271d] dark:to-[#041a13] dark:text-[#eef7f1]">
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-emerald-500/60 to-transparent" />
       <div aria-hidden="true" className="pointer-events-none absolute -bottom-32 -left-24 -z-10 size-96 rounded-full bg-emerald-400/20 blur-[110px] dark:bg-emerald-500/10" />
       <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 -z-10 size-96 rounded-full bg-green-300/20 blur-[110px] dark:bg-green-500/10" />
 
-      <div className="mx-auto grid max-w-[1400px] gap-10 px-5 py-14 sm:px-8 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] lg:gap-12 lg:px-[6.65%] lg:py-16">
+      <div className="mx-auto grid max-w-7xl gap-10 py-14 sm:px-2 md:px-0 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] lg:gap-12  lg:py-16">
         <div className="max-w-[320px]">
           <Link href="/" aria-label="HelpingHands home" className="inline-flex">
             <Image
@@ -61,7 +61,7 @@ export function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={label}
-                className="flex size-10 items-center justify-center rounded-full border border-emerald-900/10 bg-white/80 text-sm font-bold text-[#174b36] shadow-sm transition hover:-translate-y-1 hover:border-transparent hover:bg-gradient-to-br hover:from-emerald-500 hover:to-green-600 hover:text-white hover:shadow-lg hover:shadow-emerald-600/30 dark:border-white/10 dark:bg-white/5 dark:text-white"
+                className="flex size-10 items-center justify-center rounded-full border border-emerald-900/10 bg-white/80 text-sm font-bold text-[#174b36] shadow-sm transition hover:-translate-y-1 hover:border-transparent hover:bg-linear-to-br hover:from-emerald-500 hover:to-green-600 hover:text-white hover:shadow-lg hover:shadow-emerald-600/30 dark:border-white/10 dark:bg-white/5 dark:text-white"
               >
                 {text}
               </a>
@@ -97,7 +97,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-[#dcebe1] dark:border-white/10">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-3 px-5 py-5 text-xs text-[#668077] sm:px-8 md:flex-row md:items-center md:justify-between lg:px-[6.65%] dark:text-[#a9c0b5]">
+        <div className="mx-auto flex max-w-350 flex-col gap-3 px-5 py-5 text-xs text-[#668077] sm:px-8 md:flex-row md:items-center md:justify-between lg:px-[6.65%] dark:text-[#a9c0b5]">
           <p>© {new Date().getFullYear()} HelpingHands. All rights reserved.</p>
           <p className="inline-flex items-center gap-1.5">
             Made with <Heart className="size-3.5 animate-pulse fill-current text-[#20a75a]" aria-hidden="true" />
