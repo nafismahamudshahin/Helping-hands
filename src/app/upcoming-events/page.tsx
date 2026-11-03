@@ -1,12 +1,14 @@
 
 import { UpcomingEventsBrowser } from "@/components/events/UpcomingEventsBrowser";
+import UpcomingEventsSkeleton from "@/components/skeleton/UpcomingEventPageSkeleton";
 import type { EventType } from "@/types";
+import { connection } from "next/server";
 import { Suspense } from "react";
 
 async function getEvents(): Promise<EventType[]> {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/events`,
+      `${process.env.NEXT_PUBLIC_API_URL}/upcoming-events`,
       { cache: "no-store" }
     );
 
@@ -26,11 +28,12 @@ async function Events() {
   return <UpcomingEventsBrowser events={events} />;
 }
 
-export default function UpcomingEventsPage() {
+export default async function UpcomingEventsPage() {
+  await connection()
   return (
-    <section className="min-h-full bg-[#f2faf5] px-4 py-6 text-[#12382d] dark:bg-[#081b15] dark:text-[#eff8f2] sm:px-6 sm:py-8 lg:px-8">
-      <div className="mx-auto max-w-[1240px]">
-        <Suspense fallback={<p>Loading events...</p>}>
+    <section className="relative isolate min-h-full overflow-hidden bg-linear-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-4 py-8 text-[#0f3325] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff8f2] sm:px-6 sm:py-12 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <Suspense fallback={<UpcomingEventsSkeleton></UpcomingEventsSkeleton>}>
           <Events />
         </Suspense>
       </div>

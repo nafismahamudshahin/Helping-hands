@@ -34,14 +34,14 @@ function StateBox({
     <div
       role={alert ? "alert" : undefined}
       className={`col-span-full flex flex-col items-center rounded-3xl border border-dashed px-6 py-16 text-center backdrop-blur ${red
-          ? "border-red-300/60 bg-red-50/60 dark:border-red-900/60 dark:bg-red-950/20"
-          : "border-emerald-900/15 bg-white/60 dark:border-white/15 dark:bg-white/[0.03]"
+        ? "border-red-300/60 bg-red-50/60 dark:border-red-900/60 dark:bg-red-950/20"
+        : "border-emerald-900/15 bg-white/60 dark:border-white/15 dark:bg-white/3"
         }`}
     >
       <span
         className={`mb-4 flex size-14 items-center justify-center rounded-2xl ${red
-            ? "bg-red-500/10 text-red-600 dark:text-red-300"
-            : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300"
+          ? "bg-red-500/10 text-red-600 dark:text-red-300"
+          : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300"
           }`}
       >
         <Icon className="size-7" aria-hidden="true" />
@@ -78,12 +78,12 @@ export function UpcomingEventsBrowser({ events, error }: {
   return (
     <>
       {/* Hero */}
-      <div className="relative isolate overflow-hidden rounded-3xl bg-gradient-to-br from-[#06382a] via-[#0a5a41] to-[#12915a] px-6 py-9 text-white shadow-[0_24px_60px_-28px_rgba(8,70,51,0.8)] sm:px-10 sm:py-12">
+      <div className="relative isolate overflow-hidden rounded-3xl bg-linear-to-br from-[#06382a] via-[#0a5a41] to-[#12915a] px-6 py-9 text-white shadow-[0_24px_60px_-28px_rgba(8,70,51,0.8)] sm:px-10 sm:py-12">
         <div aria-hidden="true" className="absolute -right-16 -top-20 -z-10 size-72 rounded-full bg-emerald-300/25 blur-3xl" />
         <div aria-hidden="true" className="absolute -bottom-24 left-1/3 -z-10 size-72 rounded-full bg-green-200/15 blur-3xl" />
         <div
           aria-hidden="true"
-          className="absolute inset-0 -z-10 opacity-[0.08] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:22px_22px]"
+          className="absolute inset-0 -z-10 opacity-[0.08] bg-[radial-gradient(#fff_1px,transparent_1px)] bg-size-[22px_22px]"
         />
 
         <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-100 backdrop-blur">
@@ -126,7 +126,7 @@ export function UpcomingEventsBrowser({ events, error }: {
       {/* Categories */}
       <nav
         aria-label="Event categories"
-        className="-mx-4 mt-6 flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden"
+        className="-mx-4 mt-6 flex gap-2 overflow-x-auto px-4 pb-2 scrollbar-none sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden"
       >
         {categories.map((category) => {
           const isActive = activeCategory === category
@@ -138,8 +138,8 @@ export function UpcomingEventsBrowser({ events, error }: {
               aria-pressed={isActive}
               onClick={() => setActiveCategory(category)}
               className={`shrink-0 rounded-full border px-4 py-2 text-xs font-semibold transition duration-200 ${isActive
-                  ? "border-transparent bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-600/30"
-                  : "border-emerald-900/10 bg-white/80 text-[#315747] hover:-translate-y-0.5 hover:border-emerald-400 hover:bg-emerald-50 dark:border-white/10 dark:bg-white/5 dark:text-[#d5eadc] dark:hover:bg-white/10"
+                ? "border-transparent bg-linear-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-600/30"
+                : "border-emerald-900/10 bg-white/80 text-[#315747] hover:-translate-y-0.5 hover:border-emerald-400 hover:bg-emerald-50 dark:border-white/10 dark:bg-white/5 dark:text-[#d5eadc] dark:hover:bg-white/10"
                 }`}
             >
               {category}
