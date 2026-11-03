@@ -24,6 +24,9 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { useSession } from "@/lib/auth-client"
+import { getClientJwtToken } from "@/lib/getClientJwtToken";
+import { redirect, useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const eventTypes = [
   "Environment",
@@ -74,7 +77,7 @@ export default function CreateEventPage() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle")
 
   const today = new Date().toISOString().split("T")[0]
-
+  const router = useRouter()
   const handleEventCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = e.currentTarget
@@ -86,10 +89,14 @@ export default function CreateEventPage() {
 
     setSubmitting(true)
     setStatus("idle")
+    const token = await getClientJwtToken()
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events`, {
         method: "POST",
-        headers: { "Content-type": "application/json" },
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(event),
       })
       if (!res.ok) throw new Error(`Request failed with status ${res.status}`)
@@ -99,8 +106,11 @@ export default function CreateEventPage() {
       setLocation("")
       setDate("")
       setThumbnail("")
+      router.push("/manage-event");
+      toast.success("Event created successfully.")
     } catch (error) {
       console.error(error)
+      toast.error("Something went wrong. Please try again.")
       setStatus("error")
     } finally {
       setSubmitting(false)
@@ -112,8 +122,8 @@ export default function CreateEventPage() {
     : "Pick a date"
 
   return (
-    <section className="relative isolate min-h-full overflow-hidden bg-gradient-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-4 py-8 text-[#0f3325] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff8f2] sm:px-6 sm:py-12 lg:px-8">
-      <div aria-hidden="true" className="pointer-events-none absolute -top-32 left-1/2 -z-10 size-[560px] -translate-x-1/2 rounded-full bg-emerald-400/25 blur-[120px] dark:bg-emerald-500/15" />
+    <section className="relative isolate min-h-full overflow-hidden bg-linear-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-4 py-8 text-[#0f3325] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff8f2] sm:px-6 sm:py-12 lg:px-8">
+      <div aria-hidden="true" className="pointer-events-none absolute -top-32 left-1/2 -z-10 size-140 -translate-x-1/2 rounded-full bg-emerald-400/25 blur-[120px] dark:bg-emerald-500/15" />
 
       <div className="mx-auto max-w-6xl">
         <header className="mb-8">
@@ -121,7 +131,7 @@ export default function CreateEventPage() {
             <Sparkles className="size-3.5" aria-hidden="true" />
             New event
           </span>
-          <h1 className="mt-4 bg-gradient-to-r from-[#0f3325] via-emerald-700 to-emerald-500 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent dark:from-white dark:via-emerald-200 dark:to-emerald-400 md:text-5xl">
+          <h1 className="mt-4 bg-linear-to-r from-[#0f3325] via-emerald-700 to-emerald-500 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent dark:from-white dark:via-emerald-200 dark:to-emerald-400 md:text-5xl">
             Create Event
           </h1>
           <p className="mt-3 max-w-xl text-base text-muted-foreground">
@@ -131,7 +141,7 @@ export default function CreateEventPage() {
 
         <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
           {/* Form */}
-          <div className="rounded-3xl border border-white/80 bg-white/70 p-5 shadow-[0_18px_50px_-28px_rgba(15,65,42,0.45)] backdrop-blur dark:border-white/10 dark:bg-white/[0.04] sm:p-8">
+          <div className="rounded-3xl border border-white/80 bg-white/70 p-5 shadow-[0_18px_50px_-28px_rgba(15,65,42,0.45)] backdrop-blur dark:border-white/10 dark:bg-white/4 sm:p-8">
             <form onSubmit={handleEventCreate} className="space-y-5">
               <div className="grid gap-5 sm:grid-cols-2">
                 <Field id="event-title" label="Event Title" icon={Type}>
@@ -231,7 +241,7 @@ export default function CreateEventPage() {
               <Button
                 type="submit"
                 disabled={submitting}
-                className="h-12 w-full rounded-full bg-gradient-to-r from-emerald-500 to-green-600 text-sm font-semibold text-white shadow-lg shadow-emerald-600/30 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-emerald-600/40 disabled:translate-y-0 disabled:opacity-70"
+                className="h-12 w-full rounded-full bg-linear-to-r from-emerald-500 to-green-600 text-sm font-semibold text-white shadow-lg shadow-emerald-600/30 transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-emerald-600/40 disabled:translate-y-0 disabled:opacity-70"
               >
                 {submitting && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
                 {submitting ? "Creating..." : "Create Event"}
@@ -243,7 +253,7 @@ export default function CreateEventPage() {
           <aside className="lg:sticky lg:top-8">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Live preview</p>
             <article className="overflow-hidden rounded-3xl border border-white/80 bg-white shadow-[0_18px_50px_-28px_rgba(15,65,42,0.5)] dark:border-white/10 dark:bg-[#10251b]">
-              <div className="relative aspect-[16/10] bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-[#183629] dark:to-[#0f2a1e]">
+              <div className="relative aspect-16/10 bg-linear-to-br from-emerald-100 to-emerald-200 dark:from-[#183629] dark:to-[#0f2a1e]">
                 {thumbnail && !imgFailed ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -257,7 +267,7 @@ export default function CreateEventPage() {
                     <ImageIcon className="size-10" aria-hidden="true" />
                   </div>
                 )}
-                <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                <div aria-hidden="true" className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
               </div>
               <div className="space-y-3 p-5">
                 <h3 className="line-clamp-2 text-lg font-bold tracking-tight">{title || "Your event title"}</h3>
