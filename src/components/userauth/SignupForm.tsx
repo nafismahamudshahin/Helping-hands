@@ -21,7 +21,7 @@ import {
   Users,
 } from "lucide-react"
 import { ContinueWithGoogle } from "./ContinueWithGoogle"
-import { signUp } from "@/lib/auth-client"
+import { signOut, signUp } from "@/lib/auth-client"
 import { toast } from "sonner"
 
 /* -------------------------------------------------------------------------- */
@@ -54,7 +54,7 @@ export function PasswordField({
   value,
   onChange,
   autoComplete,
-  minLength = 8,
+  minLength = 6,
   placeholder = "Enter your password",
 }: {
   label: string
@@ -153,6 +153,11 @@ export function SignupForm() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (submitting) return
+    const { score } = getStrength(password)
+    if (score < 4) {
+      toast.warning("Please used more strong password.");
+      return;
+    }
     if (password !== confirmPassword) {
       toast.error("Your passwords don’t match. Please check and try again.")
       return
@@ -162,7 +167,12 @@ export function SignupForm() {
     const name = formData.get("name") as string
     const email = formData.get("email") as string
     const photoUrl = (formData.get("photoUrl") as string)?.trim()
-
+    if (photoUrl) {
+      if (photoUrl.startsWith("data:") || photoUrl.length > 300) {
+        toast.error("Please use a short image link (https://...), not an uploaded or encoded image.")
+        return
+      }
+    }
     setSubmitting(true)
     try {
       const { error } = await signUp.email({
@@ -179,7 +189,8 @@ export function SignupForm() {
       }
 
       toast.success("Account created successfully!")
-      router.replace("/")
+      await signOut();
+      router.replace("/login")
       router.refresh()
     } catch (error) {
       console.error("Unexpected error:", error)
@@ -294,7 +305,7 @@ export function SignupForm() {
                 required
               />
               <TextField
-                label="Photo URL (optional)"
+                label="Photo URL"
                 icon={ImageIcon}
                 name="photoUrl"
                 type="url"
@@ -309,7 +320,7 @@ export function SignupForm() {
                   value={password}
                   onChange={setPassword}
                   autoComplete="new-password"
-                  placeholder="At least 8 characters"
+                  placeholder="At least 6 characters"
                 />
                 <StrengthMeter password={password} />
               </div>
