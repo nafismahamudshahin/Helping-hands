@@ -1,6 +1,19 @@
+
 import { Button } from "@/components/ui/button"
+import { authClient } from "@/lib/auth-client"
+import { toast } from "sonner"
 
 export function ContinueWithGoogle() {
+  const handleContinueWithGoogle = async () => {
+    try {
+      const data = await authClient.signIn.social({
+        provider: "google",
+      })
+
+    } catch (error) {
+      toast.error(`${error}`)
+    }
+  }
   return (
     <div className="mt-6 space-y-5">
       <div className="flex items-center gap-4" aria-hidden="true">
@@ -14,6 +27,7 @@ export function ContinueWithGoogle() {
       <Button
         type="button"
         variant="outline"
+        onClick={() => handleContinueWithGoogle()}
         className="flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-[#dbe6df] bg-white text-sm font-semibold text-[#253a30] transition-colors hover:bg-[#f7faf8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#168a4d] dark:border-white/15 dark:bg-white/4 dark:text-[#edf5ef] dark:hover:bg-white/8"
       >
         <GoogleMark />

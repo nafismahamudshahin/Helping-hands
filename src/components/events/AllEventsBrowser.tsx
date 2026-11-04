@@ -74,7 +74,7 @@ export function AllEventsBrowser({ events, error }: { events: EventType[]; error
     const [sort, setSort] = useState<SortKey>("soonest")
     const [query, setQuery] = useState("")
 
-    const today = useMemo(todayInDhaka, [])
+    const today = todayInDhaka();
 
     const counts = useMemo(() => {
         const c = { Upcoming: 0, Ongoing: 0, Completed: 0 }
