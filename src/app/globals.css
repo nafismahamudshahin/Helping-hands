@@ -120,10 +120,55 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }
+}
+
+
+/* for toast */
+@keyframes toast-progress {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
+[data-sonner-toast]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 3px;
+  transform-origin: left;
+  background: #10b981;
+  animation: toast-progress var(--toast-duration, 3500ms) linear forwards;
+}
+
+[data-sonner-toast]:hover::after {
+  animation-play-state: paused;
+}
+
+[data-sonner-toast][data-type="error"]::after {
+  background: #ef4444;
+}
+
+[data-sonner-toast][data-type="warning"]::after {
+  background: #f59e0b;
+}
+
+[data-sonner-toast][data-type="info"]::after {
+  background: #0ea5e9;
+}
+
+[data-sonner-toast][data-type="loading"]::after {
+  display: none;
 }
