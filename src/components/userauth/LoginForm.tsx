@@ -9,7 +9,7 @@ import { toast } from "sonner"
 
 import { PasswordField, TextField } from "./SignupForm"
 import { ContinueWithGoogle } from "./ContinueWithGoogle"
-import { signIn } from "@/lib/auth-client"
+import { signIn, useSession } from "@/lib/auth-client"
 
 /* STATIC DEMO CONTENT – replace with real numbers whenever you like */
 const STATS = [
@@ -22,7 +22,8 @@ export function LoginForm() {
   const router = useRouter()
   const [password, setPassword] = useState("")
   const [submitting, setSubmitting] = useState(false)
-
+  const { data } = useSession()
+  const user = data?.user;
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (submitting) return
@@ -41,12 +42,11 @@ export function LoginForm() {
       })
 
       if (error) {
-        console.error("Login failed:", error.message)
         toast.error(error.message || "Invalid email or password.")
         return
       }
 
-      toast.success("Welcome back! You’re logged in.")
+      toast.success(`Welcome back! ${data?.user?.name ?? "friend"}!`)
       router.replace("/")
       router.refresh()
     } catch (error) {
