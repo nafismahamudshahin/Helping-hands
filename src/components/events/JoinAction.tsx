@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { Loader2 } from "lucide-react"
 import { getClientJwtToken } from "@/lib/getClientJwtToken"
+import { isPastEvent } from "@/commonfeatures/common-function"
 
 const JoinAction = ({ event }: { event: EventType }) => {
     const router = useRouter()
-    const { data: session } = authClient.useSession()
+    const { data: session, isPending } = authClient.useSession()
     const [joinedKey, setJoinedKey] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
     const [checkingJoinKey, setCheckingJoinKey] = useState<string | null>(null)
@@ -19,6 +21,7 @@ const JoinAction = ({ event }: { event: EventType }) => {
     const joinKey = userId ? `${userId}:${event._id}` : null
     const joined = joinKey !== null && joinedKey === joinKey
     const checkingJoin = joinKey !== null && checkingJoinKey === joinKey
+    const ended = isPastEvent(event?.date)
 
     useEffect(() => {
         let cancelled = false
@@ -47,13 +50,13 @@ const JoinAction = ({ event }: { event: EventType }) => {
                             Authorization: `Bearer ${token}`,
                         },
                     }
-                );
+                )
 
                 if (!res.ok) {
-                    throw new Error(`Request failed: ${res.status}`);
+                    throw new Error(`Request failed: ${res.status}`)
                 }
 
-                const data = await res.json();
+                const data = await res.json()
                 if (typeof data.joined !== "boolean") {
                     throw new Error("The join status response was invalid.")
                 }
@@ -61,23 +64,25 @@ const JoinAction = ({ event }: { event: EventType }) => {
                     setJoinedKey(data.joined ? joinKey : null)
                 }
             } catch (error) {
-                console.error("Check join status error:", error);
+                console.error("Check join status error:", error)
                 if (!cancelled) {
                     toast.error(error instanceof Error ? error.message : "Couldn’t check your join status.")
                 }
             } finally {
                 if (!cancelled) setCheckingJoinKey(null)
             }
-        };
+        }
 
-        checkJoinStatus();
+        checkJoinStatus()
 
         return () => {
             cancelled = true
         }
-    }, [apiUrl, userId, event._id, joinKey]);
+    }, [apiUrl, userId, event._id, joinKey])
 
     const handleJoin = async () => {
+        if (isPending) return
+
         if (!userId) {
             toast.info("Please log in to join this event.")
             router.push("/login")
@@ -93,6 +98,13 @@ const JoinAction = ({ event }: { event: EventType }) => {
             return
         }
 
+        if (ended) {
+            toast.warning("This event has already ended", {
+                description: "You can only join upcoming or ongoing events.",
+            })
+            return
+        }
+
         try {
             setLoading(true)
             const token = await getClientJwtToken()
@@ -100,21 +112,18 @@ const JoinAction = ({ event }: { event: EventType }) => {
                 throw new Error("Your session has expired. Please log in again.")
             }
 
-            const res = await fetch(
-                `${apiUrl}/participants`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        userId,
-                        eventId: event._id,
-                        joinDate: new Date().toISOString(),
-                    }),
-                }
-            )
+            const res = await fetch(`${apiUrl}/participants`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    userId,
+                    eventId: event._id,
+                    joinDate: new Date().toISOString(),
+                }),
+            })
 
             if (!res.ok) {
                 const data = await res.json().catch(() => null)
@@ -131,7 +140,7 @@ const JoinAction = ({ event }: { event: EventType }) => {
                     method: "PATCH",
                     headers: {
                         Authorization: `Bearer ${token}`,
-                    }
+                    },
                 }
             )
             if (!countRes.ok) {
@@ -140,31 +149,33 @@ const JoinAction = ({ event }: { event: EventType }) => {
                 toast.success("Successfully joined the event!")
             }
             router.refresh()
-
         } catch (error) {
-            toast.error(
-                error instanceof Error
-                    ? error.message
-                    : "Something went wrong"
-            )
+            toast.error(error instanceof Error ? error.message : "Something went wrong")
         } finally {
             setLoading(false)
         }
     }
 
+    const busy = isPending || loading || checkingJoin
+
     return (
         <Button
             onClick={handleJoin}
-            disabled={loading || checkingJoin || joined}
+            disabled={busy || joined || ended}
             className="w-full bg-green-600 hover:bg-green-700"
         >
-            {loading
-                ? "Joining..."
-                : checkingJoin
-                    ? "Checking..."
-                    : joined
-                        ? "Already Joined ✓"
-                        : "Join Event"}
+            {busy && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+            {isPending
+                ? "Loading..."
+                : loading
+                    ? "Joining..."
+                    : checkingJoin
+                        ? "Checking..."
+                        : joined
+                            ? "Already Joined ✓"
+                            : ended
+                                ? "Event Ended"
+                                : "Join Event"}
         </Button>
     )
 }
