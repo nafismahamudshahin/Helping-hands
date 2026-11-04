@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "sonner";
+import { Suspense } from "react";
+import { WelcomeToast } from "@/components/userauth/WelcomeMessage";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,8 +36,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
-          {/* <Toaster position="top-right" richColors />
-           */}
+          <Suspense fallback={null}>
+            <WelcomeToast />
+          </Suspense>
           <Toaster />
         </ThemeProvider>
       </body>
