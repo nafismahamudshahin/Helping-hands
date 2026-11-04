@@ -136,8 +136,8 @@ export function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[#e1ebe4] bg-white/90 text-[#15382d] backdrop-blur-md transition-colors supports-backdrop-filter:bg-white/80 dark:border-white/10 dark:bg-[#071a13]/90 dark:text-[#eff7f1] dark:supports-backdrop-filter:bg-[#071a13]/85">
-        <div className="mx-auto grid h-20 max-w-7xl grid-cols-[1fr_auto] items-center gap-4 sm:px-2 md:px-0 lg:grid-cols-[1fr_auto_1fr]">
+      <header className="sticky top-0 z-40 border-b border-[#e1ebe4] bg-white/90 px-5 text-[#15382d] backdrop-blur-md transition-colors supports-backdrop-filter:bg-white/80 dark:border-white/10 dark:bg-[#071a13]/90 dark:text-[#eff7f1] dark:supports-backdrop-filter:bg-[#071a13]/85 sm:px-8 lg:px-[6.65%]">
+        <div className="mx-auto grid h-20 container grid-cols-[1fr_auto] items-center gap-4 lg:grid-cols-[1fr_auto_1fr]">
           {/* Logo */}
           <Link
             href="/"
