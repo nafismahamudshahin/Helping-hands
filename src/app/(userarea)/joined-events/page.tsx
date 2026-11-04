@@ -18,6 +18,7 @@ import {
 import { auth } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { LeaveEventButton } from "@/components/events/LeaveEventButton"
+import { dateKey, formatDate, getDate, todayInDhaka } from "@/commonfeatures/common-function"
 
 type JoinRecord = {
     _id: string
@@ -137,20 +138,8 @@ async function getJoinedEvents(userId: string): Promise<{ items: JoinedItem[]; e
     }
 }
 
-const dateKey = (v: string) => v.match(/^\d{4}-\d{2}-\d{2}/)?.[0] ?? null
-
 // en-CA gives YYYY-MM-DD
-const todayInDhaka = () => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Dhaka" }).format(new Date())
 
-function getDate(v: string) {
-    const key = dateKey(v)
-    const d = key ? new Date(`${key}T00:00:00`) : null
-    return d && !Number.isNaN(d.getTime()) ? d : null
-}
-
-function formatDate(v: string) {
-    return getDate(v)?.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) ?? v
-}
 
 function getStatus(date: string, today: string): Status {
     const key = dateKey(date)
@@ -197,11 +186,11 @@ export default async function MyJoinEventsPage() {
     ] as const
 
     return (
-        <section className="relative isolate min-h-full overflow-hidden bg-linear-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-4 py-8 text-[#0f3325] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff8f2] sm:px-6 sm:py-12 md:px-8">
+        <section className="relative isolate min-h-full overflow-hidden bg-linear-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-5 py-8 text-[#0f3325] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff8f2] sm:px-8 sm:py-12 lg:px-[6.65%]">
             {/* Decorative glow */}
             <div aria-hidden="true" className="pointer-events-none absolute -top-32 left-1/2 -z-10 size-140 -translate-x-1/2 rounded-full bg-emerald-400/25 blur-[120px] dark:bg-emerald-500/15" />
 
-            <div className="mx-auto max-w-7xl space-y-10">
+            <div className="mx-auto container space-y-10">
                 {/* Header */}
                 <header className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
                     <div>
