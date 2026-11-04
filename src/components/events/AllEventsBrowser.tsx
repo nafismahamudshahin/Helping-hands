@@ -110,7 +110,7 @@ export function AllEventsBrowser({ events, error }: { events: EventType[]; error
     return (
         <>
             {/* Hero */}
-            <div className="relative isolate overflow-hidden rounded-3xl bg-linear-to-br from-[#06382a] via-[#0a5a41] to-[#12915a] px-6 py-9 text-white shadow-[0_24px_60px_-28px_rgba(8,70,51,0.8)] sm:px-10 sm:py-12">
+            <div className="relative isolate overflow-hidden rounded-3xl bg-linear-to-br from-[#06382a] via-[#0a5a41] to-[#12915a] px-6 py-9 text-white shadow-[0_24px_60px_-28px_rgba(8,70,51,0.8)] sm:px-8 sm:py-12">
                 <div aria-hidden="true" className="absolute -right-16 -top-20 -z-10 size-72 rounded-full bg-emerald-300/25 blur-3xl" />
                 <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-[0.08] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:22px_22px]" />
 
@@ -126,14 +126,14 @@ export function AllEventsBrowser({ events, error }: { events: EventType[]; error
                         </p>
                     </div>
 
-                    <dl className="flex gap-3">
+                    <dl className="grid w-full grid-cols-3 gap-2 sm:gap-3 md:flex md:w-auto">
                         {[
                             ["Total", events.length],
                             ["Upcoming", counts.Upcoming],
                             ["Done", counts.Completed],
                         ].map(([label, value]) => (
-                            <div key={label} className="min-w-20 rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-center backdrop-blur">
-                                <dd className="text-2xl font-extrabold leading-none">{value}</dd>
+                            <div key={label} className="min-w-0 rounded-2xl border border-white/20 bg-white/10 px-2 py-3 text-center backdrop-blur sm:px-4 md:min-w-20">
+                                <dd className="text-xl font-extrabold leading-none sm:text-2xl">{value}</dd>
                                 <dt className="mt-1 text-[11px] font-medium text-emerald-100/80">{label}</dt>
                             </div>
                         ))}
@@ -165,14 +165,14 @@ export function AllEventsBrowser({ events, error }: { events: EventType[]; error
 
             {/* Filters */}
             <div className="mt-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div role="group" aria-label="Event status" className="inline-flex w-fit rounded-full border border-emerald-900/10 bg-white/80 p-1 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5">
+                <div role="group" aria-label="Event status" className="grid w-full grid-cols-4 rounded-full border border-emerald-900/10 bg-white/80 p-1 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5 sm:inline-flex sm:w-fit">
                     {statuses.map((s) => (
                         <button
                             key={s}
                             type="button"
                             aria-pressed={status === s}
                             onClick={() => setStatus(s)}
-                            className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${status === s
+                            className={`rounded-full px-1 py-1.5 text-[11px] font-semibold transition sm:px-4 sm:text-xs ${status === s
                                 ? "bg-linear-to-r from-emerald-500 to-green-600 text-white shadow-md shadow-emerald-600/30"
                                 : "text-[#315747] hover:bg-emerald-50 dark:text-[#d5eadc] dark:hover:bg-white/10"
                                 }`}
@@ -182,12 +182,12 @@ export function AllEventsBrowser({ events, error }: { events: EventType[]; error
                     ))}
                 </div>
 
-                <label className="relative inline-flex w-fit items-center">
+                <label className="relative flex w-full items-center sm:inline-flex sm:w-fit">
                     <span className="sr-only">Sort events</span>
                     <select
                         value={sort}
                         onChange={(e) => setSort(e.target.value as SortKey)}
-                        className="h-10 cursor-pointer appearance-none rounded-full border border-emerald-900/10 bg-white/80 py-2 pl-4 pr-10 text-xs font-semibold text-[#315747] shadow-sm outline-none backdrop-blur transition hover:border-emerald-400 focus-visible:ring-4 focus-visible:ring-emerald-500/15 dark:border-white/10 dark:bg-[#10251b] dark:text-[#d5eadc]"
+                        className="h-10 w-full cursor-pointer appearance-none rounded-full border border-emerald-900/10 bg-white/80 py-2 pl-4 pr-10 text-xs font-semibold text-[#315747] shadow-sm outline-none backdrop-blur transition hover:border-emerald-400 focus-visible:ring-4 focus-visible:ring-emerald-500/15 dark:border-white/10 dark:bg-[#10251b] dark:text-[#d5eadc]"
                     >
                         {Object.entries(sorts).map(([key, label]) => (
                             <option key={key} value={key}>{label}</option>
@@ -197,7 +197,7 @@ export function AllEventsBrowser({ events, error }: { events: EventType[]; error
                 </label>
             </div>
 
-            <nav aria-label="Event categories" className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
+            <nav aria-label="Event categories" className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
                 {categories.map((c) => {
                     const active = category === c
                     return (
@@ -223,7 +223,7 @@ export function AllEventsBrowser({ events, error }: { events: EventType[]; error
                         Showing <span className="font-semibold text-[#0f3325] dark:text-[#eff8f2]">{filtered.length}</span> of {events.length} events
                     </p>
                     {hasFilters && (
-                        <button type="button" onClick={reset} className="font-semibold text-emerald-700 underline-offset-4 hover:underline dark:text-emerald-300">
+                        <button type="button" onClick={reset} className="shrink-0 font-semibold text-emerald-700 underline-offset-4 hover:underline dark:text-emerald-300">
                             Clear filters
                         </button>
                     )}

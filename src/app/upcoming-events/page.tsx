@@ -31,9 +31,9 @@ async function Events() {
 export default async function UpcomingEventsPage() {
   await connection()
   return (
-    <section className="relative isolate min-h-full overflow-hidden bg-linear-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-4 py-8 text-[#0f3325] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff8f2] sm:px-6 sm:py-12 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <Suspense fallback={<UpcomingEventsSkeleton></UpcomingEventsSkeleton>}>
+    <section className="relative isolate min-h-full overflow-hidden bg-linear-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-5 py-8 text-[#0f3325] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff8f2] sm:px-8 sm:py-12 lg:px-[6.65%]">
+      <div className="mx-auto container">
+        <Suspense fallback={<UpcomingEventsSkeleton />}>
           <Events />
         </Suspense>
       </div>

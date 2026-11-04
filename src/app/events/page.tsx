@@ -30,9 +30,9 @@ export default async function AllEventsPage() {
     const { events, error } = await getAllEvents()
 
     return (
-        <section className="relative isolate min-h-full overflow-hidden bg-linear-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-4 py-8 text-[#0f3325] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff8f2] sm:px-6 sm:py-12 lg:px-8">
+        <section className="relative isolate min-h-full overflow-hidden bg-linear-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-5 py-8 text-[#0f3325] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff8f2] sm:px-8 sm:py-12 lg:px-[6.65%]">
             <div aria-hidden="true" className="pointer-events-none absolute -top-32 left-1/2 -z-10 size-140 -translate-x-1/2 rounded-full bg-emerald-400/20 blur-[120px] dark:bg-emerald-500/10" />
-            <div className="mx-auto max-w-7xl">
+            <div className="mx-auto container">
                 <AllEventsBrowser events={events} error={error} />
             </div>
         </section>
