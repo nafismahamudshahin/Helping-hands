@@ -21,17 +21,21 @@ async function getEvent(id: string) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     if (!apiUrl) throw new Error("The events service is not configured.")
 
-    const res = await fetch(`${apiUrl}/events/${encodeURIComponent(id)}`, {
+    const res = await fetch(`${apiUrl}/events/${id}`, {
         cache: "no-store",
     })
 
-    if (res.status === 404) return null
+    // Missing or invalid ID -> treat as not found
+    if (res.status === 404 || res.status === 400) return null
     if (!res.ok) throw new Error(`Failed to fetch event (status ${res.status})`)
 
     const data = await res.json()
-    return data.event || data
-}
+    const event = data?.event ?? data
 
+    if (!event || typeof event !== "object" || !event.title) return null
+
+    return event
+}
 
 const FALLBACK_IMG = "/images/event-community-volunteers.jpg"
 
@@ -66,9 +70,6 @@ const AVATARS = [
     { i: "TJ", c: "from-fuchsia-400 to-pink-600" },
 ]
 
-/* -------------------------------------------------------------------------- */
-/*  Helpers                                                                   */
-/* -------------------------------------------------------------------------- */
 function formatLongDate(v?: string) {
     if (!v) return null
     const key = v.match(/^\d{4}-\d{2}-\d{2}/)?.[0]
@@ -105,9 +106,7 @@ function InfoRow({ icon: Icon, label, value }: { icon: typeof MapPin; label: str
     )
 }
 
-/* -------------------------------------------------------------------------- */
-/*  Page                                                                      */
-/* -------------------------------------------------------------------------- */
+
 export default async function EventDetailsPage({ params }: PageProps<"/events/[id]">) {
     const { id } = await params
 

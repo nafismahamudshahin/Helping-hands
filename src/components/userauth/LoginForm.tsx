@@ -9,7 +9,7 @@ import { toast } from "sonner"
 
 import { PasswordField, TextField } from "./SignupForm"
 import { ContinueWithGoogle } from "./ContinueWithGoogle"
-import { signIn, useSession } from "@/lib/auth-client"
+import { signIn } from "@/lib/auth-client"
 
 /* STATIC DEMO CONTENT – replace with real numbers whenever you like */
 const STATS = [
@@ -22,8 +22,7 @@ export function LoginForm() {
   const router = useRouter()
   const [password, setPassword] = useState("")
   const [submitting, setSubmitting] = useState(false)
-  const { data } = useSession()
-  const user = data?.user;
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (submitting) return
@@ -34,11 +33,10 @@ export function LoginForm() {
 
     setSubmitting(true)
     try {
-      const { error } = await signIn.email({
+      const { data, error } = await signIn.email({
         email,
         password,
         rememberMe: remember,
-        callbackURL: "/",
       })
 
       if (error) {
@@ -46,24 +44,29 @@ export function LoginForm() {
         return
       }
 
-      toast.success(`Welcome back! ${data?.user?.name ?? "friend"}!`)
+      const firstName = data?.user?.name?.split(" ")[0]
+      toast.success(firstName ? `Welcome back, ${firstName}!` : "Welcome back!", {
+        description: "You have signed in successfully.",
+      })
+
       router.replace("/")
       router.refresh()
     } catch (error) {
       console.error("Unexpected error:", error)
-      toast.error(error instanceof Error ? error.message : "Something went wrong. Please try again.")
+      toast.error(
+        error instanceof Error ? error.message : "Something went wrong. Please try again."
+      )
     } finally {
       setSubmitting(false)
     }
   }
-
   return (
-    <section className="relative isolate flex min-h-[calc(100vh-5rem)] items-center overflow-hidden bg-linear-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-4 py-10 text-[#13382b] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff7f1] sm:px-6 sm:py-14">
+    <section className="relative isolate flex min-h-[calc(100vh-5rem)] items-center overflow-hidden bg-linear-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-5 py-10 text-[#13382b] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff7f1] sm:px-8 sm:py-14 lg:px-[6.65%]">
       {/* Background glows */}
       <div aria-hidden="true" className="pointer-events-none absolute -top-32 left-1/2 -z-10 size-140 -translate-x-1/2 rounded-full bg-emerald-400/25 blur-[120px] dark:bg-emerald-500/15" />
       <div aria-hidden="true" className="pointer-events-none absolute -bottom-40 -right-24 -z-10 size-105 rounded-full bg-green-300/25 blur-[110px] dark:bg-green-600/10" />
 
-      <div className="mx-auto grid w-full max-w-260 overflow-hidden rounded-[2rem] border border-white/80 bg-white shadow-[0_40px_90px_-40px_rgba(14,65,39,0.35)] dark:border-white/10 dark:bg-[#0d2119] dark:shadow-black/40 md:min-h-155 md:grid-cols-[0.9fr_1.1fr]">
+      <div className="mx-auto grid container overflow-hidden rounded-[2rem] border border-white/80 bg-white shadow-[0_40px_90px_-40px_rgba(14,65,39,0.35)] dark:border-white/10 dark:bg-[#0d2119] dark:shadow-black/40 md:min-h-155 md:grid-cols-[0.9fr_1.1fr]">
         {/* ------------------------------ Brand panel ------------------------------ */}
         <aside className="relative hidden overflow-hidden bg-[#0a3626] md:block">
           <Image

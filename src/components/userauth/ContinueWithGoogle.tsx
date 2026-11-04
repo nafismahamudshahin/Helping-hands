@@ -51,8 +51,7 @@ export function ContinueWithGoogle({
         })
         setIsLoading(false)
       }
-      // On success the browser redirects to Google, so keep the loading state.
-      // The welcome toast is shown by <WelcomeToast /> after the user returns.
+
     } catch (error) {
       // Network errors or unexpected exceptions
       toast.error("Unable to continue with Google", {
