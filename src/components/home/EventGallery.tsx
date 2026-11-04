@@ -34,7 +34,7 @@ const galleryItems = [
 export default function EventGallery() {
     return (
         <section className="bg-[#f4fbf6] px-5 pb-14 pt-4 text-[#092d23] transition-colors dark:bg-[#081b16] dark:text-[#f1f8f3] sm:px-8 sm:pb-20 lg:px-[6.65%]">
-            <div className="mx-auto max-w-7xl">
+            <div className="mx-auto container">
                 <header className="mb-8 max-w-xl">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#159b50] dark:text-[#55d788]">
                         Moments that matter

@@ -10,7 +10,7 @@ const stats = [
 export default function StatusSection() {
     return (
         <section className="bg-[#f4fbf6] px-5 pb-12 pt-2 transition-colors dark:bg-[#081b16] sm:px-8 sm:pb-16 lg:px-[6.65%]">
-            <dl className="mx-auto grid max-w-7xl grid-cols-2 gap-4 lg:grid-cols-4">
+            <dl className="mx-auto grid container grid-cols-2 gap-4 lg:grid-cols-4">
                 {stats.map(({ value, label, Icon, tone }) => (
                     <div
                         key={label}

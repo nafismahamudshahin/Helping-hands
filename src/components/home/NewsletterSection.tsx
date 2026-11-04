@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 export default function NewsletterSection() {
   return (
     <section className="bg-[#f4fbf6] px-5 pb-12 pt-4 transition-colors dark:bg-[#081b16] sm:px-8 sm:pb-16 lg:px-[6.65%]">
-      <div className="relative isolate mx-auto flex max-w-7xl flex-col gap-8 overflow-hidden rounded-[32px] bg-linear-to-br from-[#06382a] via-[#0a5a41] to-[#12915a] px-6 py-10 text-white shadow-[0_28px_70px_-32px_rgba(5,72,48,0.85)] dark:from-[#0c3325] dark:via-[#0d3828] dark:to-[#0f5a3b] sm:px-10 md:flex-row md:items-center md:justify-between md:gap-10  lg:py-12">
+      <div className="relative isolate mx-auto flex container flex-col gap-8 overflow-hidden rounded-[32px] bg-linear-to-br from-[#06382a] via-[#0a5a41] to-[#12915a] px-6 py-10 text-white shadow-[0_28px_70px_-32px_rgba(5,72,48,0.85)] dark:from-[#0c3325] dark:via-[#0d3828] dark:to-[#0f5a3b] sm:px-10 md:flex-row md:items-center md:justify-between md:gap-10  lg:py-12">
         <div aria-hidden="true" className="absolute -right-16 -top-24 -z-10 size-72 rounded-full bg-emerald-300/25 blur-3xl" />
         <div aria-hidden="true" className="absolute -bottom-28 left-1/4 -z-10 size-72 rounded-full bg-green-200/15 blur-3xl" />
         <div
