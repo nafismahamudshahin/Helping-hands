@@ -16,21 +16,13 @@ import {
     Users,
 } from "lucide-react"
 import JoinAction from "@/components/events/JoinAction"
-import { getServerJwtToken } from "@/lib/getServerJwtToken"
-
 
 async function getEvent(id: string) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL
     if (!apiUrl) throw new Error("The events service is not configured.")
 
-    const token = await getServerJwtToken()
-    if (!token) throw new Error("You must be signed in to load this event.")
-
     const res = await fetch(`${apiUrl}/events/${encodeURIComponent(id)}`, {
         cache: "no-store",
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
     })
 
     if (res.status === 404) return null
@@ -130,10 +122,10 @@ export default async function EventDetailsPage({ params }: PageProps<"/events/[i
     const longDate = formatLongDate(event.date)
 
     return (
-        <section className="relative isolate min-h-screen overflow-hidden bg-gradient-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-4 py-6 text-[#0f3325] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff8f2] sm:px-6 sm:py-8 md:px-8">
+        <section className="relative isolate min-h-screen overflow-hidden bg-gradient-to-b from-[#e9f8ef] via-[#f5fbf7] to-[#f5fbf7] px-5 py-6 text-[#0f3325] dark:from-[#06150f] dark:via-[#081b16] dark:to-[#081b16] dark:text-[#eff8f2] sm:px-8 sm:py-8 lg:px-[6.65%]">
             <div aria-hidden="true" className="pointer-events-none absolute -top-32 left-1/2 -z-10 size-[560px] -translate-x-1/2 rounded-full bg-emerald-400/25 blur-[120px] dark:bg-emerald-500/15" />
 
-            <div className="mx-auto max-w-7xl space-y-8">
+            <div className="mx-auto container space-y-8">
                 {/* Back link */}
                 <Link
                     href="/upcoming-events"
@@ -358,12 +350,23 @@ export default async function EventDetailsPage({ params }: PageProps<"/events/[i
 
                         {/* Organizer (static) */}
                         <div className={`${CARD} flex items-center gap-4 p-5`}>
-                            <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-500 to-green-700 text-sm font-bold text-white shadow-lg shadow-emerald-600/30">
-                                {ORGANIZER.initials}
+                            <span className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-linear-to-br from-emerald-500 to-green-700 text-sm font-bold text-white shadow-lg shadow-emerald-600/30">
+                                {event?.organizerPhoto ? (
+                                    <Image
+                                        src={event.organizerPhoto}
+                                        alt={event?.organizer ?? ORGANIZER.name}
+                                        fill
+                                        sizes="48px"
+                                        unoptimized
+                                        className="object-cover"
+                                    />
+                                ) : (
+                                    (event?.organizer ?? ORGANIZER.name).charAt(0).toUpperCase()
+                                )}
                             </span>
                             <div className="min-w-0">
                                 <p className="text-xs text-muted-foreground">Organized by</p>
-                                <p className="truncate font-semibold">{ORGANIZER.name}</p>
+                                <p className="truncate font-semibold">{event?.organizer ?? ORGANIZER.name}</p>
                                 <p className="mt-0.5 inline-flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                                     <BadgeCheck className="size-3.5" aria-hidden="true" />
                                     {ORGANIZER.role}
