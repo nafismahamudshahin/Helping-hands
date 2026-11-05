@@ -121,6 +121,7 @@ const JoinAction = ({ event }: { event: EventType }) => {
                 body: JSON.stringify({
                     userId,
                     eventId: event._id,
+                    eventDate: event.date,
                     joinDate: new Date().toISOString(),
                 }),
             })

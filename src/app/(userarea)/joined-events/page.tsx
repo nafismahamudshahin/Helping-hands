@@ -18,7 +18,7 @@ import {
 import { auth } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { LeaveEventButton } from "@/components/events/LeaveEventButton"
-import { dateKey, formatDate, getDate, todayInDhaka } from "@/commonfeatures/common-function"
+import { formatDate, getDate } from "@/commonfeatures/common-function"
 
 type JoinRecord = {
     _id: string
@@ -130,7 +130,7 @@ async function getJoinedEvents(userId: string): Promise<{ items: JoinedItem[]; e
             uniqueIds.map(async (id) => [id, await getEvent(apiUrl, id, token)] as const),
         )
         const eventMap = new Map(entries)
-
+        console.log(eventMap)
         return { items: joins.map((join) => ({ join, event: eventMap.get(join.eventId) ?? null })) }
     } catch (error) {
         console.error("Unable to load joined events:", error)
@@ -168,6 +168,21 @@ function StateBox({ icon: Icon, title, text, children, alert }: {
         </div>
     )
 }
+const dhakaFmt = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Dhaka",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+}) // en-CA => YYYY-MM-DD
+
+export function todayInDhaka(): string {
+    return dhakaFmt.format(new Date())
+}
+export function dateKey(value: string): string | null {
+    const d = new Date(value)
+    if (Number.isNaN(d.getTime())) return null
+    return dhakaFmt.format(d)
+}
 
 export default async function MyJoinEventsPage() {
     const session = await auth.api.getSession({ headers: await headers() })
@@ -175,12 +190,35 @@ export default async function MyJoinEventsPage() {
 
     const { items, error } = await getJoinedEvents(session.user.id)
     const today = todayInDhaka()
+    const sortedItems = [...items].sort((a, b) => {
+        const ak = a.event ? dateKey(a.event.date) : null
+        const bk = b.event ? dateKey(b.event.date) : null
 
+        // Deleted/invalid events go last
+        if (!ak && !bk) return 0
+        if (!ak) return 1
+        if (!bk) return -1
+
+        const aDone = ak < today
+        const bDone = bk < today
+
+        // Upcoming/ongoing before completed
+        if (aDone !== bDone) return aDone ? 1 : -1
+
+        // Upcoming: soonest first. Completed: most recent first.
+        return aDone ? bk.localeCompare(ak) : ak.localeCompare(bk)
+    })
+    // test in console
+    console.log("joined: ", sortedItems)
+    for (const j of sortedItems) {
+        console.log(j.event?.date)
+    }
+    // end test
     const statusOf = (i: JoinedItem) => (i.event ? getStatus(i.event.date, today) : null)
-    const count = (s: Status) => items.filter((i) => statusOf(i) === s).length
+    const count = (s: Status) => sortedItems.filter((i) => statusOf(i) === s).length
 
     const summary = [
-        { label: "Events joined", value: items.length, Icon: CalendarCheck2, tone: "green" },
+        { label: "Events joined", value: sortedItems.length, Icon: CalendarCheck2, tone: "green" },
         { label: "Upcoming", value: count("Upcoming") + count("Ongoing"), Icon: Clock3, tone: "blue" },
         { label: "Attended", value: count("Completed"), Icon: CheckCircle2, tone: "slate" },
     ] as const
@@ -237,7 +275,7 @@ export default async function MyJoinEventsPage() {
                 {/* Events */}
                 {error ? (
                     <StateBox alert icon={AlertTriangle} title="Events unavailable" text={error} />
-                ) : items.length === 0 ? (
+                ) : sortedItems.length === 0 ? (
                     <StateBox icon={CalendarOff} title="No Joined Events" text="You haven't joined any events yet. Find one that matters to you.">
                         <Button
                             render={<Link href="/events" />}
@@ -249,7 +287,7 @@ export default async function MyJoinEventsPage() {
                     </StateBox>
                 ) : (
                     <ul className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                        {items.map(({ join, event }) => {
+                        {sortedItems.map(({ join, event }) => {
                             const status = event ? getStatus(event.date, today) : null
                             const style = status ? STATUS_STYLES[status] : null
                             const d = event ? getDate(event.date) : null

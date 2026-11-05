@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { getClientJwtToken } from "@/lib/getClientJwtToken"
 import type { EventType } from "@/types"
+import { isPastEvent } from "@/commonfeatures/common-function";
 
 const DeleteEvent = ({ event }: { event: EventType }) => {
     const router = useRouter()
@@ -28,7 +29,13 @@ const DeleteEvent = ({ event }: { event: EventType }) => {
         // keep the dialog open while the request is running
         e.preventDefault()
         if (loading) return
-
+        const ended = isPastEvent(event?.date)
+        if (ended) {
+            toast.warning("This Event is Ended!", {
+                description: "You can't delete this Event.",
+            })
+            return
+        }
         setLoading(true)
         try {
             const token = await getClientJwtToken()

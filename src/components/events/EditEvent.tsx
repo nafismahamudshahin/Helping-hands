@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { getClientJwtToken } from "@/lib/getClientJwtToken"
+import { isPastEvent } from "@/commonfeatures/common-function"
 
 // Fields this form edits. Intersected so it works even if EventType lacks some of them.
 type EditableEvent = EventType &
@@ -80,7 +81,13 @@ const EditEvent = ({ event: rawEvent }: { event: EventType }) => {
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
         if (saving || !event._id) return
-
+        const ended = isPastEvent(event?.date)
+        if (ended) {
+            toast.warning("This Event is Ended!", {
+                description: "You can't Edit this Event Information.",
+            })
+            return
+        }
         const fd = new FormData(e.currentTarget)
         const text = (k: string) => String(fd.get(k) ?? "").trim()
 
