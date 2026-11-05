@@ -195,7 +195,7 @@ export function Navbar() {
                   aria-label={`Open ${user.name ?? "user"} account menu`}
                   className="rounded-full outline-none ring-2 ring-transparent transition hover:ring-green-500/40 focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2"
                 >
-                  <Avatar size="lg">
+                  <Avatar title={`${user.name}`} size="lg">
                     <AvatarImage src={user.image ?? undefined} alt={user.name ?? "Profile photo"} />
                     <AvatarFallback className="bg-green-100 font-semibold text-green-800 dark:bg-green-900 dark:text-green-100">
                       {initials || "U"}
@@ -289,7 +289,7 @@ export function Navbar() {
                 ) : (
                   user && (
                     <div className="mx-4 mt-4 flex items-center gap-3 rounded-2xl bg-green-50 p-3 dark:bg-green-500/10">
-                      <Avatar size="lg">
+                      <Avatar title={`${user.name}`} size="lg">
                         <AvatarImage src={user.image ?? undefined} alt={user.name ?? "Profile photo"} />
                         <AvatarFallback className="bg-green-100 font-semibold text-green-800 dark:bg-green-900 dark:text-green-100">
                           {initials || "U"}
