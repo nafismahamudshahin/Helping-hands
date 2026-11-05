@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { ArrowRight, CalendarCheck, CalendarCog, CirclePlus, Loader2, LogOut, Menu, UserRound } from "lucide-react"
+import { ArrowRight, Award, CalendarCheck, CalendarCog, CirclePlus, Loader2, LogOut, Menu, UserRound } from "lucide-react"
 import { cn } from "cn"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -45,6 +45,7 @@ const accountLinks = [
   { href: "/create-event", label: "Create Event", Icon: CirclePlus, highlight: false },
   { href: "/manage-event", label: "Manage Events", Icon: CalendarCog, highlight: false },
   { href: "/joined-events", label: "Joined Events", Icon: CalendarCheck, highlight: false },
+  { href: "/my-certificates", label: "Certificates", Icon: Award, highlight: false },
 ]
 
 const logoClassName =

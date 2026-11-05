@@ -8,6 +8,7 @@ import { toast } from "sonner"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { getClientJwtToken } from "@/lib/getClientJwtToken"
+import Loading from "@/app/loading"
 
 const FALLBACK_IMAGE = "/images/event-community-volunteers.jpg"
 const todayInDhaka = new Intl.DateTimeFormat("en-CA", {
@@ -137,11 +138,11 @@ export default function ProfilePage() {
     }, [userId])
 
     if (isPending) {
-        return <main className="mx-auto min-h-[60vh] max-w-5xl px-5 py-16 text-center">Loading your profile…</main>
+        return <Loading></Loading>
     }
 
     if (authUser && activityLoading) {
-        return <main className="mx-auto min-h-[60vh] max-w-5xl px-5 py-16 text-center">Loading your profile activity…</main>
+        return <Loading></Loading>
     }
 
     if (!authUser) {

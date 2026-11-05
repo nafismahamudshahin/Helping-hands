@@ -130,7 +130,6 @@ async function getJoinedEvents(userId: string): Promise<{ items: JoinedItem[]; e
             uniqueIds.map(async (id) => [id, await getEvent(apiUrl, id, token)] as const),
         )
         const eventMap = new Map(entries)
-        console.log(eventMap)
         return { items: joins.map((join) => ({ join, event: eventMap.get(join.eventId) ?? null })) }
     } catch (error) {
         console.error("Unable to load joined events:", error)
@@ -208,12 +207,7 @@ export default async function MyJoinEventsPage() {
         // Upcoming: soonest first. Completed: most recent first.
         return aDone ? bk.localeCompare(ak) : ak.localeCompare(bk)
     })
-    // test in console
-    console.log("joined: ", sortedItems)
-    for (const j of sortedItems) {
-        console.log(j.event?.date)
-    }
-    // end test
+
     const statusOf = (i: JoinedItem) => (i.event ? getStatus(i.event.date, today) : null)
     const count = (s: Status) => sortedItems.filter((i) => statusOf(i) === s).length
 
