@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { ArrowRight, CalendarCheck, CalendarCog, CirclePlus, Loader2, LogOut, Menu } from "lucide-react"
+import { ArrowRight, CalendarCheck, CalendarCog, CirclePlus, Loader2, LogOut, Menu, UserRound } from "lucide-react"
 import { cn } from "cn"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -41,7 +41,8 @@ const navLinks = [
 
 // Shown in the account dropdown (desktop) and in the mobile menu (logged-in users)
 const accountLinks = [
-  { href: "/create-event", label: "Create Event", Icon: CirclePlus, highlight: true },
+  { href: "/profile", label: "User Profile", Icon: UserRound, highlight: false },
+  { href: "/create-event", label: "Create Event", Icon: CirclePlus, highlight: false },
   { href: "/manage-event", label: "Manage Events", Icon: CalendarCog, highlight: false },
   { href: "/joined-events", label: "Joined Events", Icon: CalendarCheck, highlight: false },
 ]
