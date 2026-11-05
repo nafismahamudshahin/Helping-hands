@@ -21,6 +21,7 @@ import EditEvent from "@/components/events/EditEvent"
 import { EventType } from "@/types"
 import DeleteEvent from "@/components/events/ DeleteEvent"
 import { getServerJwtToken } from "@/lib/getServerJwtToken"
+import { toast } from "sonner"
 
 
 type Status = "Upcoming" | "Ongoing" | "Completed"
@@ -41,7 +42,7 @@ async function getMyEvents(userId: string): Promise<{ events: EventType[]; error
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     if (!apiUrl) return { events: [], error: "The events service is not configured." }
     const token = await getServerJwtToken();
-    console.log("Token: ", token)
+
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/events/my/${userId}`, {
             cache: "no-store",
@@ -54,7 +55,7 @@ async function getMyEvents(userId: string): Promise<{ events: EventType[]; error
         const events = data
         return { events }
     } catch (error) {
-        console.error("Unable to load the user's events:", error)
+        toast.error(`Unable to load the user's events: ${error}`)
         return { events: [], error: "We couldn’t load your events. Please try again later." }
     }
 }

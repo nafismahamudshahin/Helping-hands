@@ -81,8 +81,57 @@ export default function CreateEventPage() {
   const handleEventCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = e.currentTarget
+    const formData = Object.fromEntries(new FormData(form).entries())
+
+    const location = String(formData.location ?? "").trim()
+    const locationPattern = /^[\p{L}\p{N}\s,.\-/#()']+$/u
+
+    const title = String(formData.title ?? "").trim()
+    const description = String(formData.description ?? "").trim()
+    const thumbnailUrl = String(formData.thumbnailUrl ?? "").trim()
+
+    // --- validation ---
+    if (title.length < 3 || title.length > 80) {
+      toast.error("Title must be between 3 and 80 characters.")
+      return
+    }
+    if (location.length < 3 || location.length > 100) {
+      toast.error("Location must be between 3 and 100 characters.")
+      return
+    }
+    if (!/\p{L}/u.test(location) || !locationPattern.test(location)) {
+      toast.error("Please enter a valid location, for example: Mirpur 10, Dhaka.")
+      return
+    }
+
+
+    if (description.length < 20 || description.length > 1000) {
+      toast.error("Description must be between 20 and 1000 characters.")
+      return
+    }
+
+
+    let imageUrl: URL
+    try {
+      imageUrl = new URL(thumbnailUrl)
+    } catch {
+      toast.error("Please enter a valid image URL.")
+      return
+    }
+    if (imageUrl.protocol !== "https:" && imageUrl.protocol !== "http:") {
+      toast.error("Image URL must start with http:// or https://")
+      return
+    }
+    if (imgFailed) {
+      toast.error("The image could not be loaded. Please check the URL.")
+      return
+    }
+
     const event = {
-      ...Object.fromEntries(new FormData(form).entries()),
+      ...formData,
+      title,
+      description,
+      thumbnailUrl,
       joined: 0,
       organizer: user?.name,
       organizerPhoto: user?.image,
@@ -108,7 +157,7 @@ export default function CreateEventPage() {
       setLocation("")
       setDate("")
       setThumbnail("")
-      router.push("/manage-event");
+      router.push("/manage-event")
       toast.success("Event created successfully.")
     } catch (error) {
       console.error(error)

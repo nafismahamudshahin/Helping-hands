@@ -70,7 +70,6 @@ function Field({
 const inputClass =
     "h-10 rounded-xl focus-visible:border-emerald-500 focus-visible:ring-emerald-500/20"
 const EditEvent = ({ event: rawEvent }: { event: EventType }) => {
-    console.log("event: ", rawEvent);
     const event = rawEvent as EditableEvent
     const router = useRouter()
     const [open, setOpen] = useState(false)
@@ -91,17 +90,61 @@ const EditEvent = ({ event: rawEvent }: { event: EventType }) => {
         const fd = new FormData(e.currentTarget)
         const text = (k: string) => String(fd.get(k) ?? "").trim()
 
-        const payload = {
-            title: text("title"),
-            category: text("category"),
-            date: text("date"),
-            location: text("location"),
-            thumbnailUrl: text("thumbnailUrl"),
-            description: text("description")
-                .split("\n")
-                .map((a) => a.trim())
-                .filter(Boolean),
+        const title = text("title")
+        const category = text("category")
+        const date = text("date")
+        const location = text("location")
+        const thumbnailUrl = text("thumbnailUrl")
+        // keep description a string; tidy each line and cap blank lines at one
+        const description = text("description")
+            .split("\n")
+            .map((line) => line.trim())
+            .join("\n")
+            .replace(/\n{3,}/g, "\n\n")
+
+        // --- validation ---
+        if (title.length < 3 || title.length > 80) {
+            toast.error("Title must be between 3 and 80 characters.")
+            return
         }
+
+        if (!category) {
+            toast.error("Please choose an event type.")
+            return
+        }
+
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(new Date(`${date}T00:00:00`).getTime())) {
+            toast.error("Please enter a valid date.")
+            return
+        }
+        if (isPastEvent(date)) {
+            toast.error("The event date must be today or in the future.")
+            return
+        }
+
+        if (location.length < 3 || location.length > 100) {
+            toast.error("Location must be between 3 and 100 characters.")
+            return
+        }
+        if (!/\p{L}/u.test(location) || !/^[\p{L}\p{N}\s,.\-/#()']+$/u.test(location)) {
+            toast.error("Please enter a valid location, for example: Mirpur 10, Dhaka.")
+            return
+        }
+
+        if (description.length < 20 || description.length > 1000) {
+            toast.error("Description must be between 20 and 1000 characters.")
+            return
+        }
+
+        try {
+            const url = new URL(thumbnailUrl)
+            if (url.protocol !== "https:" && url.protocol !== "http:") throw new Error("bad protocol")
+        } catch {
+            toast.error("Please enter a valid image URL starting with http:// or https://")
+            return
+        }
+
+        const payload = { title, category, date, location, thumbnailUrl, description }
 
         setSaving(true)
         const token = await getClientJwtToken()
