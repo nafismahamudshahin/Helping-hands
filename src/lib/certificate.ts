@@ -43,6 +43,24 @@ export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
     return res.json();
 }
 
+// Public certificate verification must work for visitors without an account.
+export async function publicApi<T>(path: string, init: RequestInit = {}): Promise<T> {
+    const res = await fetch(`${API}${path}`, {
+        ...init,
+        headers: {
+            "Content-Type": "application/json",
+            ...init.headers,
+        },
+    });
+    if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw Object.assign(new Error(body.message || "Request failed"), {
+            status: res.status,
+        });
+    }
+    return res.json();
+}
+
 export const formatDate = (d: string) =>
     new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 

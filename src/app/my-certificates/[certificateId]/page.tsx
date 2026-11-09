@@ -118,11 +118,23 @@ function SharePanel({ cert }: { cert: Certificate }) {
     const [canNativeShare, setCanNativeShare] = useState(false);
     useEffect(() => setCanNativeShare("share" in navigator), []);
 
-    // The certificate page itself is private, so we share the PUBLIC event page.
-    // ADAPT: change "/events/" if your event details route is different.
-    const url = typeof window !== "undefined" ? `${window.location.origin}/events/${cert.eventId}` : "";
+    // Use the public verification page so recipients can validate the credential.
+    const url = typeof window !== "undefined"
+        ? `${window.location.origin}/certificate/verify/${encodeURIComponent(cert.certificateId)}`
+        : "";
     const text = `I just earned a Certificate of Participation for "${cert.eventTitle}" with Helping Hands! 🌟`;
     const enc = encodeURIComponent;
+    const issueDate = new Date(cert.issueDate);
+    const linkedInParams = new URLSearchParams({
+        startTask: "CERTIFICATION_NAME",
+        name: `Certificate of Participation - ${cert.eventTitle}`,
+        organizationName: "HelpingHands",
+        issueYear: String(issueDate.getFullYear()),
+        issueMonth: String(issueDate.getMonth() + 1),
+        certId: cert.certificateId,
+        certUrl: url,
+    });
+    const addToLinkedInUrl = `https://www.linkedin.com/profile/add?${linkedInParams.toString()}`;
 
     const links = [
         { name: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`, cls: "bg-[#1877f2]" },
@@ -174,6 +186,15 @@ function SharePanel({ cert }: { cert: Certificate }) {
                     </a>
                 ))}
             </div>
+
+            <a
+                href={addToLinkedInUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(btnPrimary, "mt-2.5 bg-[#0a66c2] hover:bg-[#004182] dark:bg-[#0a66c2] dark:text-white")}
+            >
+                <ExternalLink className="size-4" /> Add certificate to LinkedIn
+            </a>
 
             <div className="mt-2.5 space-y-2.5">
                 <button onClick={copy} className={btnOutline}>
